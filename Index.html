@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= HtmlService.createHtmlOutputFromFile('Stylesheet').getContent(); ?>
+  </head>
+  <body>
+    <h1><?= data.title ?></h1>
+    <ol>
+      <? for (var x in data.users) { ?>
+        <li><?= data.users[x].user ?></li>
+        <ul>
+          <? for (var y in data.users[x].items) { ?>
+           <li><?= data.users[x].items[y].name ?>: <?= data.users[x].items[y].value ?></li>
+          <? } ?>
+        </ul>
+      <? } ?>
+    </ol>
+  </body>
+</html>
