@@ -2,16 +2,15 @@
 <html>
   <head>
     <base target="_top">
-    <?!= HtmlService.createHtmlOutputFromFile('Stylesheet').getContent(); ?>
   </head>
   <body>
-    <h1><?= data.title ?></h1>
     <ol>
-      <? for (var x in data.users) { ?>
-        <li><?= data.users[x].user ?></li>
+      <? for (var x in Object.keys(data)) { ?>
+        <li><?= Object.keys(data)[x] ?></li>
         <ul>
-          <? for (var y in data.users[x].items) { ?>
-           <li><?= data.users[x].items[y].name ?>: <?= data.users[x].items[y].value ?></li>
+          <? var value = data[Object.keys(data)[x]] ?>
+          <? for (var y in Object.keys(value)) { ?>
+           <li><?= Object.keys(value)[y] + ': ' + value[Object.keys(value)[y]] ?></li>
           <? } ?>
         </ul>
       <? } ?>
