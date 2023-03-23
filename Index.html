@@ -5,14 +5,13 @@
   </head>
   <body>
     <ol>
-      <? for (var x in Object.keys(data)) { ?>
-        <li><?= Object.keys(data)[x] ?></li>
-        <ul>
-          <? var value = data[Object.keys(data)[x]] ?>
-          <? for (var y in Object.keys(value)) { ?>
-           <li><?= Object.keys(value)[y] + ': ' + value[Object.keys(value)[y]] ?></li>
-          <? } ?>
-        </ul>
+      <? for (var [title, info] of Object.entries(data)) { ?>
+        <li><?= title ?></li>
+          <ul>
+            <? for (var [key, value] of Object.entries(info)) { ?>
+              <li><?= key + ":" + value ?></li>
+            <? } ?>
+          </ul>
       <? } ?>
     </ol>
   </body>
