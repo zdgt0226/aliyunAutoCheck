@@ -26,7 +26,8 @@ function aliyunCheckin() {
       });
       var accessToken = JSON.parse(accessRep).access_token;
       var newRefresh_token = JSON.parse(accessRep).refresh_token;
-      sheet.getRange(index + 1, 1).setValue(newRefresh_token);
+      var _index = parseInt(index) + 1;
+      sheet.getRange(_index, 1).setValue(newRefresh_token);
       var nickName = JSON.parse(accessRep).nick_name;
       // 签到
       try {
