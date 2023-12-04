@@ -45,7 +45,8 @@ function aliyunCheckin() {
           return day.status === "normal";
         }); //获取当月签到的记录
         var currentSignIn = signInArray[signInCount - 1];
-        if (currentSignIn.isReward) {
+        //签到之后默认奖品是没有领取的，故以下的isReward值应为false
+        if (!currentSignIn.isReward) {
           //基于阿里云规则增加奖品领取的功能
           var rewardRep = UrlFetchApp.fetch(rewardURL, {
             method: "POST",
