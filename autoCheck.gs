@@ -5,6 +5,7 @@
 const accesssTokenURL = "https://auth.aliyundrive.com/v2/account/token";
 const siginURL = "https://member.aliyundrive.com/v1/activity/sign_in_list";
 const rewardURL = "https://member.aliyundrive.com/v1/activity/sign_in_reward";
+const goodURL = "https://member.aliyundrive.com/v1/activity/sign_in_goods";
 function aliyunCheckin() {
   // 从 google 表格中获取 refresh_token 列表
   var sheet = SpreadsheetApp.getActiveSheet();
@@ -48,25 +49,45 @@ function aliyunCheckin() {
         //签到之后默认奖品是没有领取的，故以下的isReward值应为false
         if (!currentSignIn.isReward) {
           //基于阿里云规则增加奖品领取的功能
-          var rewardRep = UrlFetchApp.fetch(rewardURL, {
-            method: "POST",
-            contentType: "application/json; charset=UTF-8",
-            payload: JSON.stringify(Object.assign(queryBody, {
-              signInDay: signInCount
-            })),
-            headers: {
-              Authorization: 'Bearer '+ accessToken
-            }
-          });
-          var rewardSuccess = JSON.parse(rewardRep).success;
-          if (rewardSuccess) {
-            var signInReward = currentSignIn.reward.notice;
+          try {
+            var rewardRep = UrlFetchApp.fetch(rewardURL, {
+              'method': 'POST',
+              'contentType': 'application/json; charset=UTF-8',
+              'payload': JSON.stringify(Object.assign(queryBody, {
+                'signInDay': signInCount
+              })),
+              'headers': {
+                'Authorization': 'Bearer ' + accessToken
+              }
+            });
+            var rewardStatus = JSON.parse(rewardRep);
+          } catch(e) {
+            var signInReward = '领取失败：' + '错误信息' + e;
+            break;
+          };
+          if (rewardStatus.success) {
+            var signInReward = rewardStatus.result.notice;
           } else {
-            var signInReward = "空气";
+            var signInReward = '领取失败';
           };
         } else {
-          var signInReward = "空气";
-        }
+          //对已领取的情况进行领取信息的获取，避免出现错误的领取信息
+          try {
+            var isGoodRep = UrlFetchApp.fetch(goodURL, {
+              'method': 'POST',
+              'contentType': 'application/json; charset=UTF-8',
+              'payload': JSON.stringify(queryBody),
+              'headers': {
+                'Authorization': 'Bearer '+ accessToken
+                }
+              }
+            );
+            var isGoodLogs = JSON.parse(isGoodRep);
+            var signInReward = isGoodLogs.result.rewardName;
+          } catch(e) {
+            break;
+          };
+        };
         message["账号： " + nickName] = {
           本月已签到: signInCount,
           签到奖励: signInReward,
